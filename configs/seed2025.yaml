@@ -1,0 +1,57 @@
+# RespS4D headline config — appearance-weighted motion stem + vertical optical
+# flow + respiration-adapted bidirectional S4D (clean pure-motion).
+# seed 42 is the published headline; split_seed is pinned so all seeds share the
+# same fold -> subject assignment.
+run_name: abl_s4d_clean_nospatial_appear_gate_seed2025
+save_dir: checkpoints
+seed: 2025
+split_seed: 42
+n_folds: 5
+val_from_train: 4
+
+# --- data (build these caches first: preprocess_cohface.py + precompute_flow.py) ---
+cache_path: caches/cache_cohface_128.h5
+flow_cache_path: caches/cache_cohface_128_farneback_flow5.h5
+frame_len: 160          # 8 s @ 20 fps
+stride_train: 80
+stride_eval: 160
+batch_size: 10
+num_workers: 4
+
+# --- optimization ---
+lr: 0.0001
+weight_decay: 0.0003
+warmup_epochs: 3
+epochs: 50
+clip_grad: 1.0
+patience: 10            # early stop on validation Pearson
+
+# --- loss (Eq. 13): NegPearson + beta(e)*SpectralMSE + lam_amp*Huber(std) ---
+alpha: 1.0
+beta_init: 0.1
+lam_amp: 0.2
+eta: 5.0
+
+# --- model ---
+model:
+  dim: 64
+  encoder_layers: 4
+  temporal_ds_layers: 3
+  num_heads: 4
+  ff_dim: 96
+  theta: 0.6
+  dropout: 0.1
+  motion_mode: farneback_y
+  diff_mode: appear_gate
+  tdt_use_spatial_attn: false
+  tdt_use_temporal_attn: true
+  tdt_temporal_op: s4d
+  s4d_state: 64
+  s4d_dt_min: 0.05
+  s4d_dt_max: 0.4
+  s4d_bidirectional: true
+  s4d_init_mode: resp_log
+  s4d_freq_min: 0.1
+  s4d_freq_max: 0.5
+  s4d_d_init: 0.1
+  s4d_output_scale: 0.5

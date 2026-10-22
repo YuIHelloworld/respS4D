@@ -1,0 +1,7 @@
+scope,n_windows,wave_PCC_mean,wave_PCC_median,RR_MAE_bpm_mean,RR_RMSE_bpm
+pooled_5fold,190,0.8589,0.9136,0.4279,1.2709
+fold0,41,0.9169,,0.9152,
+fold1,36,0.9010,,0.2674,
+fold2,37,0.8649,,0.2379,
+fold3,38,0.7195,,0.4101,
+fold4,38,0.8901,,0.2570,
